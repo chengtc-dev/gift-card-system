@@ -1,12 +1,18 @@
 package tw.iancheng.giftcardsystem.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import tw.iancheng.giftcardsystem.dto.ProductRequest;
+
+import java.math.BigDecimal;
 
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -19,6 +25,8 @@ class ProductControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     // 查詢商品列表
     @Test
@@ -86,5 +94,48 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.pageable.pageNumber", equalTo(2)))
                 .andExpect(jsonPath("$.size", equalTo(2)))
                 .andExpect(jsonPath("$.totalPages", equalTo(3)));
+    }
+
+    // 創建商品
+    @Transactional
+    @Test
+    public void createProduct_success() throws Exception {
+        ProductRequest productRequest = ProductRequest.builder()
+                .name("TEST PRODUCT 6").description("TEST PRODUCT 6").price(new BigDecimal(60))
+                .stockQuantity(new BigDecimal(60)).categoryId(1L)
+                .build();
+
+        String json = objectMapper.writeValueAsString(productRequest);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(201))
+                .andExpect(jsonPath("$.name", equalTo("TEST PRODUCT 6")))
+                .andExpect(jsonPath("$.description", equalTo("TEST PRODUCT 6")))
+                .andExpect(jsonPath("$.price", equalTo(60)))
+                .andExpect(jsonPath("$.stockQuantity", equalTo(60)))
+                .andExpect(jsonPath("$.category.id", equalTo(1)));
+    }
+
+    @Transactional
+    @Test
+    public void createProduct_illegalArgument() throws Exception {
+        ProductRequest productRequest = ProductRequest.builder()
+                .name("TEST PRODUCT 6")
+                .build();
+
+        String json = objectMapper.writeValueAsString(productRequest);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(400));
     }
 }
