@@ -59,6 +59,11 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.save(product);
     }
 
+    @Override
+    public void deleteProduct(Long id) {
+        productRepository.deleteById(id);
+    }
+
     private Product buildProduct(ProductRequest productRequest) {
         Category category = categoryRepository.findById(productRequest.getCategoryId()).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.BAD_REQUEST));

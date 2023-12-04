@@ -199,4 +199,25 @@ class ProductControllerTest {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(404));
     }
+
+    // 刪除商品
+    @Transactional
+    @Test
+    public void deleteProduct_success() throws Exception {
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .delete("/products/{id}", 5);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(204));
+    }
+
+    @Transactional
+    @Test
+    public void deleteProduct_deleteNonExistingProduct() throws Exception {
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .delete("/products/{id}", 20000);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(204));
+    }
 }
