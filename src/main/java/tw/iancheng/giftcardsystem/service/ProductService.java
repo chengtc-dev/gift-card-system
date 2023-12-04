@@ -9,4 +9,6 @@ public interface ProductService {
     Page<Product> getProducts(ProductQueryParams productQueryParams);
 
     Product createProduct(ProductRequest productRequest);
+
+    Product updateProduct(ProductRequest productRequest, Long id);
 }

@@ -138,4 +138,65 @@ class ProductControllerTest {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400));
     }
+
+    // 更新商品
+    @Transactional
+    @Test
+    public void updateProduct_success() throws Exception {
+        ProductRequest productRequest = ProductRequest.builder()
+                .name("TEST PRODUCT 7").description("TEST PRODUCT 7").price(new BigDecimal(70))
+                .stockQuantity(new BigDecimal(70)).categoryId(2L)
+                .build();
+
+        String json = objectMapper.writeValueAsString(productRequest);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .put("/products/{productId}", 3)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(200))
+                .andExpect(jsonPath("$.name", equalTo("TEST PRODUCT 7")))
+                .andExpect(jsonPath("$.description", equalTo("TEST PRODUCT 7")))
+                .andExpect(jsonPath("$.price", equalTo(70)))
+                .andExpect(jsonPath("$.stockQuantity", equalTo(70)))
+                .andExpect(jsonPath("$.category.id", equalTo(2)));
+    }
+
+    @Transactional
+    @Test
+    public void updateProduct_illegalArgument() throws Exception {
+        ProductRequest productRequest = ProductRequest.builder()
+                .name("TEST PRODUCT 7").build();
+
+        String json = objectMapper.writeValueAsString(productRequest);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .put("/products/{productId}", 3)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(400));
+    }
+
+    @Transactional
+    @Test
+    public void updateProduct_productNotFound() throws Exception {
+        ProductRequest productRequest = ProductRequest.builder()
+                .name("TEST PRODUCT 7").description("TEST PRODUCT 7").price(new BigDecimal(70))
+                .stockQuantity(new BigDecimal(70)).categoryId(2L)
+                .build();
+
+        String json = objectMapper.writeValueAsString(productRequest);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .put("/products/{productId}", 20000)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(404));
+    }
 }

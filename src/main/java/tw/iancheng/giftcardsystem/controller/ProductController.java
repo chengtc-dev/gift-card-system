@@ -54,6 +54,14 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(product);
     }
 
+    @PutMapping("/products/{id}")
+    public ResponseEntity<Product> updateProduct(@RequestBody @Validated ProductRequest productRequest,
+                                                 @PathVariable Long id) {
+        Product product = productService.updateProduct(productRequest, id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(product);
+    }
+
     private PageRequest setPageRequest(Integer pageNumber, Integer pageSize, Boolean desc, String sort) {
         Sort.Direction direction = desc ? Sort.Direction.DESC : Sort.Direction.ASC;
         return PageRequest.of(pageNumber, pageSize, Sort.by(direction, sort));
