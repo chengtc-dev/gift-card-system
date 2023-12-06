@@ -9,8 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import tw.iancheng.giftcardsystem.dto.ProductQueryParams;
-import tw.iancheng.giftcardsystem.dto.ProductRequest;
+import tw.iancheng.giftcardsystem.dto.product.ProductQueryParams;
+import tw.iancheng.giftcardsystem.dto.product.ProductRequest;
 import tw.iancheng.giftcardsystem.model.Product;
 import tw.iancheng.giftcardsystem.service.ProductService;
 

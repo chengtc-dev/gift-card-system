@@ -1,4 +1,4 @@
-package tw.iancheng.giftcardsystem.dto;
+package tw.iancheng.giftcardsystem.dto.product;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;

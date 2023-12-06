@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import tw.iancheng.giftcardsystem.dto.ProductRequest;
+import tw.iancheng.giftcardsystem.dto.product.ProductRequest;
 
 import java.math.BigDecimal;
 
