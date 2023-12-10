@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import tw.iancheng.giftcardsystem.dto.user.UserLoginRequest;
 import tw.iancheng.giftcardsystem.dto.user.UserRegisterRequest;
 import tw.iancheng.giftcardsystem.model.User;
 import tw.iancheng.giftcardsystem.repository.UserRepository;
@@ -92,5 +93,103 @@ class AuthControllerTest {
         // 再次使用同個 email 註冊
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400));
+    }
+
+    // 登入
+    @Test
+    public void login_success() throws Exception {
+        // 先註冊新帳號
+        UserRegisterRequest userRegisterRequest = UserRegisterRequest.builder()
+                .email("test3@gcs.com").password("P@ssw0rd")
+                .build();
+
+        register(userRegisterRequest);
+
+        // 再測試登入功能
+        UserLoginRequest userLoginRequest = UserLoginRequest.builder()
+                .email(userRegisterRequest.getEmail()).password(userRegisterRequest.getPassword())
+                .build();
+
+        String json = objectMapper.writeValueAsString(userLoginRequest);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(200))
+                .andExpect(jsonPath("$.email", equalTo(userRegisterRequest.getEmail())));
+    }
+
+    @Test
+    public void login_wrongPassword() throws Exception {
+        // 先註冊新帳號
+        UserRegisterRequest userRegisterRequest = UserRegisterRequest.builder()
+                .email("test4@gcs.com").password("P@ssw0rd")
+                .build();
+
+        register(userRegisterRequest);
+
+        // 測試密碼輸入錯誤的情況
+        UserLoginRequest userLoginRequest = UserLoginRequest.builder()
+                .email(userRegisterRequest.getEmail()).password("Wrong Password")
+                .build();
+
+        String json = objectMapper.writeValueAsString(userLoginRequest);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(400));
+    }
+
+    @Test
+    public void login_invalidEmailFormat() throws Exception {
+        UserLoginRequest userLoginRequest = UserLoginRequest.builder()
+                .email("Invalid Email Format").password("P@ssw0rd")
+                .build();
+
+        String json = objectMapper.writeValueAsString(userLoginRequest);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(400));
+    }
+
+    @Test
+    public void login_emailNotExist() throws Exception {
+        UserLoginRequest userLoginRequest = UserLoginRequest.builder()
+                .email("emailNotExist@gcs.tw").password("P@ssw0rd")
+                .build();
+
+        String json = objectMapper.writeValueAsString(userLoginRequest);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(400));
+    }
+
+    private void register(UserRegisterRequest userRegisterRequest) throws Exception {
+        String json = objectMapper.writeValueAsString(userRegisterRequest);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(201));
     }
 }

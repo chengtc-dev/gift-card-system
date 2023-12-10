@@ -3,6 +3,7 @@ package tw.iancheng.giftcardsystem.service.impl;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import tw.iancheng.giftcardsystem.dto.user.UserLoginRequest;
 import tw.iancheng.giftcardsystem.dto.user.UserRegisterRequest;
 import tw.iancheng.giftcardsystem.model.User;
 import tw.iancheng.giftcardsystem.repository.UserRepository;
@@ -22,7 +23,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public User register(UserRegisterRequest userRegisterRequest) {
-        if (userExist(userRegisterRequest))
+        if (userExist(userRegisterRequest.getEmail()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
         User user = buildUser(userRegisterRequest);
@@ -30,8 +31,16 @@ public class AuthServiceImpl implements AuthService {
         return userRepository.save(user);
     }
 
-    private boolean userExist(UserRegisterRequest userRegisterRequest) {
-        User user = userRepository.getUserByEmail(userRegisterRequest.getEmail());
+    @Override
+    public User login(UserLoginRequest userLoginRequest) {
+        if (!userExist(userLoginRequest.getEmail()) || !validatePassword(userLoginRequest))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+
+        return userRepository.getUserByEmail(userLoginRequest.getEmail());
+    }
+
+    private boolean userExist(String email) {
+        User user = userRepository.getUserByEmail(email);
 
         return user != null;
     }
@@ -53,5 +62,11 @@ public class AuthServiceImpl implements AuthService {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private boolean validatePassword(UserLoginRequest userLoginRequest) {
+        User user = userRepository.getUserByEmail(userLoginRequest.getEmail());
+
+        return user.getPassword().equals(hashPassword(userLoginRequest.getPassword()));
     }
 }

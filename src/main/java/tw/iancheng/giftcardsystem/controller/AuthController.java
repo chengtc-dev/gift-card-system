@@ -6,6 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import tw.iancheng.giftcardsystem.dto.user.UserLoginRequest;
 import tw.iancheng.giftcardsystem.dto.user.UserRegisterRequest;
 import tw.iancheng.giftcardsystem.model.User;
 import tw.iancheng.giftcardsystem.service.AuthService;
@@ -25,4 +26,12 @@ public class AuthController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
+
+    @PostMapping("/auth/login")
+    public ResponseEntity<User> login(@RequestBody @Validated UserLoginRequest userLoginRequest) {
+        User user = authService.login(userLoginRequest);
+
+        return ResponseEntity.status(HttpStatus.OK).body(user);
+    }
+
 }
