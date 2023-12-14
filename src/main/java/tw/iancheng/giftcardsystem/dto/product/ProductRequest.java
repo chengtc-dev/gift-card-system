@@ -18,7 +18,7 @@ public class ProductRequest {
     private BigDecimal price;
 
     @NotNull
-    private BigDecimal stockQuantity;
+    private Integer stockQuantity;
 
     @NotNull
     private Long categoryId;

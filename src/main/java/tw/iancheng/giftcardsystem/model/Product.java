@@ -24,7 +24,7 @@ public class Product {
     private String name;
     private String description;
     private BigDecimal price;
-    private BigDecimal stockQuantity;
+    private Integer stockQuantity;
 
     @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @CreationTimestamp
