@@ -102,7 +102,7 @@ class ProductControllerTest {
     public void createProduct_success() throws Exception {
         ProductRequest productRequest = ProductRequest.builder()
                 .name("TEST PRODUCT 6").description("TEST PRODUCT 6").price(new BigDecimal(60))
-                .stockQuantity(new BigDecimal(60)).categoryId(1L)
+                .stockQuantity(60).categoryId(1L)
                 .build();
 
         String json = objectMapper.writeValueAsString(productRequest);
@@ -145,7 +145,7 @@ class ProductControllerTest {
     public void updateProduct_success() throws Exception {
         ProductRequest productRequest = ProductRequest.builder()
                 .name("TEST PRODUCT 7").description("TEST PRODUCT 7").price(new BigDecimal(70))
-                .stockQuantity(new BigDecimal(70)).categoryId(2L)
+                .stockQuantity(70).categoryId(2L)
                 .build();
 
         String json = objectMapper.writeValueAsString(productRequest);
@@ -186,7 +186,7 @@ class ProductControllerTest {
     public void updateProduct_productNotFound() throws Exception {
         ProductRequest productRequest = ProductRequest.builder()
                 .name("TEST PRODUCT 7").description("TEST PRODUCT 7").price(new BigDecimal(70))
-                .stockQuantity(new BigDecimal(70)).categoryId(2L)
+                .stockQuantity(70).categoryId(2L)
                 .build();
 
         String json = objectMapper.writeValueAsString(productRequest);
