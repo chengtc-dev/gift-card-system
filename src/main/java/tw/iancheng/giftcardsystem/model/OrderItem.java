@@ -21,7 +21,7 @@ public class OrderItem {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
-    private BigDecimal quantity;
+    private Integer quantity;
     private BigDecimal amount;
 
     @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
@@ -32,7 +32,8 @@ public class OrderItem {
     @UpdateTimestamp
     private Date updatedAt;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "PRODUCT_ID")
     private Product product;
 
 }

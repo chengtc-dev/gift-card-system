@@ -8,10 +8,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import tw.iancheng.giftcardsystem.dto.order.OrderCreateRequest;
 import tw.iancheng.giftcardsystem.dto.order.OrderQueryParams;
 import tw.iancheng.giftcardsystem.model.Order;
 import tw.iancheng.giftcardsystem.service.OrderService;
@@ -38,6 +36,16 @@ public class OrderController {
         Page<Order> orders = orderService.getOrders(orderQueryParams);
 
         return ResponseEntity.status(HttpStatus.OK).body(orders);
+    }
+
+    @PostMapping("users/{userId}/orders")
+    public ResponseEntity<Order> createOrder(
+            @RequestBody @Validated OrderCreateRequest orderCreateRequest,
+            @PathVariable Long userId
+    ) {
+        Order order = orderService.createOrder(orderCreateRequest, userId);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(order);
     }
 
     private PageRequest setPageRequest(Integer pageNumber, Integer pageSize) {
