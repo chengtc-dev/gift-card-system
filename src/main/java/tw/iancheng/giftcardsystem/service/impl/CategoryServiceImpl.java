@@ -1,6 +1,7 @@
 package tw.iancheng.giftcardsystem.service.impl;
 
 import org.springframework.stereotype.Service;
+import tw.iancheng.giftcardsystem.dto.category.CategoryCreateRequest;
 import tw.iancheng.giftcardsystem.model.Category;
 import tw.iancheng.giftcardsystem.repository.CategoryRepository;
 import tw.iancheng.giftcardsystem.service.CategoryService;
@@ -19,6 +20,15 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<Category> getCategories() {
         return categoryRepository.findAll();
+    }
+
+    @Override
+    public Category createCategory(CategoryCreateRequest categoryCreateRequest) {
+        Category category = Category.builder()
+                .name(categoryCreateRequest.getName())
+                .build();
+
+        return categoryRepository.save(category);
     }
 
 }
